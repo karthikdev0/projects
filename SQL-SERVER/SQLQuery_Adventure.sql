@@ -44,3 +44,67 @@ ORDER BY [LocationID]*10
 SELECT ([LocationID]), (SUM(Quantity)) AS 'total_quantity' FROM [Production].[ProductInventory]
 GROUP BY ([LocationID])
 ORDER BY [LocationID]
+
+
+------------------------------------------------------------------------------------------------------------
+--11
+SELECT p.BusinessEntityID ,p.FirstName , p.LastName , ph.PhoneNumber FROM [Person].[Person] AS p
+INNER JOIN [Person].[PersonPhone] AS ph
+ON p.[BusinessEntityID] = ph.[BusinessEntityID]
+WHERE p.[LastName] LIKE 'L%' --OR  p.[LastName] LIKE 'l%'
+ORDER BY LastName, FirstName
+
+--12
+SELECT [SalesPersonId] , [CustomerId] , SUM(SubTotal) AS Sub_Total  FROM [Sales].[SalesOrderHeader]
+GROUP BY  ROLLUP(SalesPersonId , CustomerId)
+
+--13
+SELECT [LocationID] ,[Shelf] ,SUM(Quantity) AS Total_Quantity FROM [Production].[ProductInventory]
+GROUP BY CUBE(LocationID,Shelf)
+
+--16
+SELECT * FROM Person.BusinessEntityAddress
+SELECT * FROM Person.Address
+
+SELECT A.City , COUNT(BusinessEntityID) AS noofemployees FROM [Person].[BusinessEntityAddress] AS BEA
+INNER JOIN [Person].[Address] AS A
+ON BEA.AddressID = A.AddressID
+GROUP BY A.City
+ORDER BY A.City ASC;
+
+
+--17
+SELECT YEAR(OrderDate) FROM [Sales].[SalesOrderHeader]
+SELECT DATEPART(YEAR,OrderDate) FROM [Sales].[SalesOrderHeader]
+SELECT YEAR(OrderDate) AS 'Year' , SUM(TotalDue) AS 'Order Amount' FROM [Sales].[SalesOrderHeader]
+GROUP BY (YEAR(OrderDate))
+ORDER BY (YEAR(OrderDate))
+SELECT DATEPART(year,OrderDate) ,SUM(TotalDue) FROM [Sales].[SalesOrderHeader]
+GROUP BY DATEPART(year,OrderDate)
+ORDER BY DATEPART(year,OrderDate)
+
+
+--18
+SELECT DATEPART(YEAR,OrderDate) AS 'YEAR' , SUM(TotalDue) AS 'Total' FROM [Sales].[SalesOrderHeader]
+GROUP BY DATEPART(YEAR,OrderDate)
+HAVING DATEPART(YEAR,OrderDate) <= 2016
+ORDER BY DATEPART(YEAR,OrderDate)
+
+
+--19
+SELECT ContactTypeID ,Name FROM [Person].[ContactType]
+WHERE Name LIKE '%Manager%'
+ORDER BY Name DESC
+
+
+--20
+SELECT BEC.BusinessEntityID,P.LastName, P.FirstName FROM [Person].[BusinessEntityContact] AS BEC
+INNER JOIN [Person].[ContactType] AS CT
+ON CT.ContactTypeID = BEC.ContactTypeID 
+INNER JOIN [Person].[Person] AS P
+ON P.BusinessEntityID = BEC.PersonID
+WHERE CT.Name = 'Purchasing Manager'
+ORDER BY P.LastName,P.FirstName
+
+
+
